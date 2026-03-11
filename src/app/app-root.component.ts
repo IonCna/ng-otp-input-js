@@ -2,7 +2,7 @@ import type { IComponentController, IComponentOptions } from 'angular';
 import template from './app-root.component.html?raw';
 
 class AppRootController implements IComponentController {
-  public title = 'ng-otp-input-js';
+  public title = 'NgInputOTP for AngularJS';
   public description =
     'Componente OTP para AngularJS con navegacion por teclado, configuracion simple y una integracion directa.';
   public completedValue = '';
