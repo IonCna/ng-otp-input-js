@@ -121,14 +121,6 @@ El build de librería genera:
 - `dist/cjs` para salida CommonJS
 - `dist/types` para declaraciones TypeScript
 
-## Release
-
-Tag recomendado para la primera release en GitHub:
-
-```text
-v0.1.0
-```
-
 ## Notas
 
 AngularJS 1.x ya no tiene soporte activo oficial, asi que este proyecto esta orientado a mantenimiento o integraciones sobre aplicaciones existentes en AngularJS.
