@@ -1,21 +1,39 @@
 <style>
+    .ng-otp-input {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
     .ng-otp-input input {
-        width: 2rem;
+        width: 2.75rem;
+        height: 2.9rem;
         appearance: none;
+        padding: 0.35rem;
         background-clip: padding-box;
         -moz-appearance: none;
+        background: #ffffff;
         color: #212529;
-        caret-color: rgba(var(--bs-primary-rgb), var(--bs-bg-opacity)) !important;
+        caret-color: #2563eb;
+        border: 1px solid #cbd5e1;
+        border-radius: 0.85rem;
+        font-size: 1rem;
+        font-weight: 500;
+        line-height: 1;
+        text-align: center;
+        transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
     }
 
     .ng-otp-input input:focus {
         outline: 0;
-        border-color: var(--bs-primary-bg-subtle) !important;
+        border-color: #93c5fd !important;
         box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        transform: translateY(-1px);
     }
 </style>
 
-<div class="d-flex ng-otp-input gap-1 align-items-center">
+<div class="ng-otp-input">
     <input
         ng-disabled="$.otpDisabled"
         ng-focus="$.onFocus($event)"
@@ -27,6 +45,5 @@
         ng-repeat="chunk in $.chunks track by chunk"
         ng-attr-id="ng-otp-chunk-{{ chunk }}"
         ng-attr-aria-label="ng-otp-chunk-{{ chunk + 1 }}"
-        class="py-1 bg-white fs-6 rounded-1 border border-secondary-subtle fw-light lh-base text-dark text-center"
         type="text">
 </div>
