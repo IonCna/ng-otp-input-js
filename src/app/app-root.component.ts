@@ -1,34 +1,64 @@
 import type { IComponentOptions } from 'angular';
+import template from './app-root.component.html?raw';
 
 class AppRootController {
-  public title = 'AngularJS App';
-  public description = 'Inicio minimo con componente principal en clase.';
+  public title = 'ng-otp-input-js';
+  public description =
+    'Componente OTP para AngularJS con estado finito, navegacion por teclado y configuracion simple.';
+  public completedValue = '----';
+  public otpMaxLength = 4;
+  public otpDisabled = false;
+  public otpOnlyNumbers = true;
+  public otpKeyboard = true;
+  public readonly highlights = [
+    {
+      eyebrow: 'Estado',
+      title: 'FSM ligera',
+      text: 'La demo usa el mismo flujo de estados del componente para mantener la interaccion predecible.',
+    },
+    {
+      eyebrow: 'Bindings',
+      title: 'Configurable',
+      text: 'Puedes alternar numero de digitos, bloqueo del teclado y solo numeros desde la misma vista.',
+    },
+    {
+      eyebrow: 'AngularJS',
+      title: 'Clase + HTML',
+      text: 'Los componentes del demo siguen el mismo patron de clase TypeScript con template separado.',
+    },
+  ];
+
+  public handleOtpComplete(value: string | number) {
+    this.completedValue = String(value);
+  }
+
+  public toggleNumbersMode() {
+    this.otpOnlyNumbers = !this.otpOnlyNumbers;
+    this.completedValue = '----';
+  }
+
+  public toggleKeyboardMode() {
+    this.otpKeyboard = !this.otpKeyboard;
+  }
+
+  public toggleDisabledMode() {
+    this.otpDisabled = !this.otpDisabled;
+  }
+
+  public increaseLength() {
+    if (this.otpMaxLength >= 6) return;
+    this.otpMaxLength += 1;
+    this.completedValue = '----';
+  }
+
+  public decreaseLength() {
+    if (this.otpMaxLength <= 4) return;
+    this.otpMaxLength -= 1;
+    this.completedValue = '----';
+  }
 }
 
 export const appRootComponent: IComponentOptions = {
   controller: AppRootController,
-  template: `
-    <main class="app-root container py-5">
-      <div class="row justify-content-center">
-        <div class="col-12 col-md-10 col-lg-8">
-          <div class="app-root__panel card border-0 shadow-sm">
-            <div class="card-body p-4 p-md-5">
-              <p class="app-root__eyebrow text-primary fw-semibold mb-2">Starter</p>
-              <h1 class="app-root__title display-5 mb-3">{{ $ctrl.title }}</h1>
-              <p class="app-root__description lead text-secondary mb-4">{{ $ctrl.description }}</p>
-
-              <div class="mb-4">
-                <ng-otp-input></ng-otp-input>
-              </div>
-
-              <div class="d-flex gap-2 flex-wrap">
-                <button type="button" class="btn btn-primary">Primary action</button>
-                <button type="button" class="btn btn-outline-secondary">Secondary</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </main>
-  `,
+  template,
 };

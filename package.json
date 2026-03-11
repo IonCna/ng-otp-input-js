@@ -1,18 +1,39 @@
 {
   "name": "ng-otp-input-js",
-  "private": true,
-  "version": "0.0.0",
+  "private": false,
+  "version": "1.0.0",
   "type": "module",
+  "files": [
+    "dist/lib",
+    "dist/cjs",
+    "dist/types"
+  ],
+  "main": "./dist/cjs/index.cjs",
+  "module": "./dist/lib/index.js",
+  "types": "./dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/lib/index.js",
+      "require": "./dist/cjs/index.cjs"
+    }
+  },
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
+    "build": "npm run build:lib",
+    "build:demo": "tsc && vite build",
+    "build:types": "tsc -p tsconfig.lib.json",
+    "build:lib": "npm run build:types && node scripts/build-lib.mjs",
+    "preview": "vite preview",
+    "prepublishOnly": "npm run build:lib",
+    "release:first": "npm publish --access public"
   },
   "dependencies": {
     "angular": "1.8.2"
   },
   "devDependencies": {
     "@types/angular": "^1.8.9",
+    "esbuild": "^0.27.3",
     "typescript": "~5.9.3",
     "vite": "^8.0.0-beta.13"
   },

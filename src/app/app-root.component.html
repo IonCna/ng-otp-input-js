@@ -1,0 +1,79 @@
+<main class="app-root">
+  <section class="container py-5">
+    <div class="row g-4 align-items-stretch">
+      <div class="col-12 col-lg-6">
+        <div class="card shadow-lg border-0 h-100">
+          <div class="card-body p-4 p-xl-5">
+            <p class="text-uppercase text-primary fw-bold small mb-3">AngularJS OTP Demo</p>
+            <h1 class="display-4 fw-bold lh-1 mb-3">{{ $ctrl.title }}</h1>
+            <p class="lead text-secondary mb-4">{{ $ctrl.description }}</p>
+
+            <div class="d-flex flex-wrap gap-2 mb-4">
+              <button type="button" class="btn btn-dark" ng-click="$ctrl.toggleNumbersMode()">
+                Solo numeros: {{ $ctrl.otpOnlyNumbers ? 'ON' : 'OFF' }}
+              </button>
+              <button
+                type="button"
+                class="btn btn-outline-dark"
+                ng-click="$ctrl.toggleKeyboardMode()"
+              >
+                Arrows: {{ $ctrl.otpKeyboard ? 'ON' : 'OFF' }}
+              </button>
+              <button
+                type="button"
+                class="btn btn-outline-dark"
+                ng-click="$ctrl.toggleDisabledMode()"
+              >
+                Disabled: {{ $ctrl.otpDisabled ? 'ON' : 'OFF' }}
+              </button>
+            </div>
+
+            <div class="d-flex align-items-center gap-3">
+              <span class="fw-semibold text-secondary">Digitos</span>
+              <div class="btn-group" role="group" aria-label="Longitud OTP">
+                <button type="button" class="btn btn-outline-secondary" ng-click="$ctrl.decreaseLength()">-</button>
+                <button type="button" class="btn btn-light" disabled>{{ $ctrl.otpMaxLength }}</button>
+                <button type="button" class="btn btn-outline-secondary" ng-click="$ctrl.increaseLength()">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-12 col-lg-6">
+        <div class="card text-bg-dark shadow-lg border-0 h-100">
+          <div class="card-body p-4 p-xl-5 d-flex flex-column">
+            <p class="badge rounded-pill text-bg-secondary align-self-start mb-3">Live Preview</p>
+            <h2 class="h2 mb-2">One-time password</h2>
+            <p class="text-white-50 mb-4">Prueba la navegacion y los bindings reales del componente.</p>
+
+            <div class="otp-preview rounded-4 p-3 p-md-4 mb-4">
+              <ng-otp-input
+                otp-max-length="$ctrl.otpMaxLength"
+                otp-disabled="$ctrl.otpDisabled"
+                otp-only-numbers="$ctrl.otpOnlyNumbers"
+                otp-keyboard="$ctrl.otpKeyboard"
+                otp-on-complete="$ctrl.handleOtpComplete($event)"
+              ></ng-otp-input>
+            </div>
+
+            <div class="border-top border-secondary-subtle pt-3 mt-auto">
+              <span class="text-uppercase small text-white-50 d-block">Ultimo valor</span>
+              <strong class="fs-3 tracking-wide">{{ $ctrl.completedValue }}</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-4 mt-1">
+      <div class="col-12 col-md-4" ng-repeat="item in $ctrl.highlights track by item.title">
+        <demo-highlight
+          eyebrow="{{ item.eyebrow }}"
+          title="{{ item.title }}"
+          text="{{ item.text }}"
+        ></demo-highlight>
+      </div>
+    </div>
+  </section>
+</main>

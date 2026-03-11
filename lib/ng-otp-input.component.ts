@@ -1,5 +1,5 @@
 import angular from "angular";
-import type { IAugmentedJQuery, IComponentController, IComponentOptions, ITimeoutService } from "angular";
+import type { IAugmentedJQuery, IComponentController, IComponentOptions, IOnChangesObject, ITimeoutService } from "angular";
 import template from "./ng-otp-input.component.html?raw";
 import { NgOTPInputConfigService } from "./ng-otp-input.service"
 import { NgOtpInputFactory, type INgOptInput } from "./ng-otp-input-state.factory"
@@ -84,6 +84,41 @@ export class NgOTPInputComponent implements IComponentController {
         }
 
         this.state.enable()
+    }
+
+    $onChanges(changes: IOnChangesObject): void {
+        if (changes["otpMaxLength"]?.currentValue != null) {
+            this.otpMaxLength = Number(changes["otpMaxLength"].currentValue)
+        }
+
+        if (changes["otpDisabled"]?.currentValue != null) {
+            this.otpDisabled = Boolean(changes["otpDisabled"].currentValue)
+        }
+
+        if (changes["otpOnlyNumbers"]?.currentValue != null) {
+            this.otpOnlyNumbers = Boolean(changes["otpOnlyNumbers"].currentValue)
+        }
+
+        if (changes["otpKeyboard"]?.currentValue != null) {
+            this.otpKeyboard = Boolean(changes["otpKeyboard"].currentValue)
+        }
+
+        if (!this.otpMaxLength) return
+
+        this.digits = Array.from({ length: this.otpMaxLength }, () => "")
+        this.chunks = Array.from({ length: this.otpMaxLength }, (_, index) => index)
+
+        if (this.state) {
+            this.state.setLength(this.otpMaxLength)
+
+            if (this.otpDisabled) {
+                this.state.disable()
+            } else {
+                this.state.enable()
+            }
+        }
+
+        this.$timeout(this.registerInputs.bind(this), 0, false)
     }
 
     $postLink(): void {
@@ -196,23 +231,23 @@ export class NgOTPInputComponent implements IComponentController {
 
         const { key } = event
 
-        if(key != this.SPECIAL_KEYS.ARROW_LEFT && key != this.SPECIAL_KEYS.ARROW_RIGHT) return
-        if(!isHtmlInputElement(event.target)) return
+        if (key != this.SPECIAL_KEYS.ARROW_LEFT && key != this.SPECIAL_KEYS.ARROW_RIGHT) return
+        if (!isHtmlInputElement(event.target)) return
 
         event.preventDefault()
         event.stopPropagation()
-        
+
         const index = this.inputs.indexOf(event.target)
         const next = key == this.SPECIAL_KEYS.ARROW_LEFT ? index - 1 : index + 1
 
-        if(next < 0 || next > this.otpMaxLength - 1) return
+        if (next < 0 || next > this.otpMaxLength - 1) return
         const input = this.inputs[next]
 
         const hasText = Boolean(
             angular.element(input).val()
         )
 
-        if(!hasText && next > index) return;
+        if (!hasText && next > index) return;
 
         this.state.setActiveIndex(next)
         this.state.send(
@@ -227,7 +262,7 @@ export class NgOTPInputComponent implements IComponentController {
         const inputs = this.$element.find("input")
         const elements = Array.from(inputs)
 
-        if(!isHtmlInputArray(elements)) return;
+        if (!isHtmlInputArray(elements)) return;
         this.inputs = elements;
     }
 
