@@ -22,6 +22,7 @@ export class NgOTPInputComponent implements IComponentController {
 
     private digits: string[] = []
     private state!: INgOptInput
+    private readonly boundArrowKeyDown = this.onArrowKeyDown.bind(this)
 
     protected chunks: number[] = []
     protected inputs: HTMLInputElement[] = []
@@ -55,6 +56,15 @@ export class NgOTPInputComponent implements IComponentController {
         const str = this.digits.join("")
         const result = this.otpOnlyNumbers ? parseInt(str) : str
         this.otpOnComplete?.({ $event: result })
+    }
+
+    private focusInput(index: number) {
+        const input = this.inputs[index]
+        if (!input) return
+
+        this.state.setActiveIndex(index)
+        input.focus()
+        input.select()
     }
 
     $onInit(): void {
@@ -121,6 +131,15 @@ export class NgOTPInputComponent implements IComponentController {
         this.state.setActiveIndex(index)
 
         if (key === this.SPECIAL_KEYS.BACKSPACE) {
+            const target = $event.target
+            if (isHtmlInputElement(target) && !target.value && index > 0) {
+                this.digits[index - 1] = ""
+                this.state.setValueAt(index - 1, "")
+                this.state.send(this.state.EVENTS.BACKSPACE)
+                this.focusInput(index - 1)
+                return
+            }
+
             this.digits[index] = ""
             this.state.setValueAt(index, "")
             this.state.send(this.state.EVENTS.BACKSPACE)
@@ -140,7 +159,6 @@ export class NgOTPInputComponent implements IComponentController {
     }
 
     protected onFocus($event: FocusEvent) {
-        $event.preventDefault()
         $event.stopPropagation()
 
         if (!$event?.target) throw new Error("event not found");
@@ -152,24 +170,30 @@ export class NgOTPInputComponent implements IComponentController {
         this.state.send(this.state.EVENTS.FOCUS)
         input.select()
 
+        if (!this.otpKeyboard) return
         this.addListenArrowControls()
     }
 
     protected onBlur() {
         this.state.setActiveIndex(null)
         this.state.send(this.state.EVENTS.BLUR)
+
+        if (!this.otpKeyboard) return
         this.removeListenerArrowControls()
     }
 
     private addListenArrowControls() {
-        this.$element.on("keydown", this.onArrowKeyDown.bind(this))
+        this.$element.off("keydown", this.boundArrowKeyDown)
+        this.$element.on("keydown", this.boundArrowKeyDown)
     }
 
     private removeListenerArrowControls() {
-        this.$element.off("keydown")
+        this.$element.off("keydown", this.boundArrowKeyDown)
     }
 
     private onArrowKeyDown(event: JQueryEventObject) {
+        if (!this.otpKeyboard) return
+
         const { key } = event
 
         if(key != this.SPECIAL_KEYS.ARROW_LEFT && key != this.SPECIAL_KEYS.ARROW_RIGHT) return
@@ -196,8 +220,7 @@ export class NgOTPInputComponent implements IComponentController {
                 ? this.state.EVENTS.ARROW_LEFT
                 : this.state.EVENTS.ARROW_RIGHT
         )
-        input.focus()
-        input.select()
+        this.focusInput(next)
     }
 
     private registerInputs() {
