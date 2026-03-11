@@ -67,6 +67,12 @@ export class NgOTPInputComponent implements IComponentController {
         input.select()
     }
 
+    private resetRenderedInputs() {
+        for (const input of this.inputs) {
+            input.value = ""
+        }
+    }
+
     $onInit(): void {
         this.otpMaxLength = this.otpMaxLength ?? this.ngOTPInputConfigService.maxLength
         this.otpOnlyNumbers = this.otpOnlyNumbers ?? this.ngOTPInputConfigService.onlyNumbers
@@ -118,7 +124,10 @@ export class NgOTPInputComponent implements IComponentController {
             }
         }
 
-        this.$timeout(this.registerInputs.bind(this), 0, false)
+        this.$timeout(() => {
+            this.registerInputs()
+            this.resetRenderedInputs()
+        }, 0, false)
     }
 
     $postLink(): void {
